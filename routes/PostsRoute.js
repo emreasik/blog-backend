@@ -1,9 +1,13 @@
 const express = require('express')
-const { getPost, createPost } = require('../controllers/PostsController');
+const { getPosts, getPostsByLimit, createPost, getPostById } = require('../controllers/postsController');
+const { checkJwt } = require('../middlewares/auth/jwtHandler');
 
 const router = express.Router();
 
-router.get('/', getPost);
-router.post('/', createPost);
+router.get('/posts', getPosts);
+router.get('/posts/:limit', getPostsByLimit);
+router.get('/post/:id', getPostById); // UPDATE /POSTS
+router.post('/post', checkJwt, createPost);
 
 module.exports = router; 
+
