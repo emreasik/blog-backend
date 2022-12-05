@@ -1,9 +1,14 @@
+require("express-async-errors")
 const express = require('express');
-require('dotenv').config();
 const bodyParser = require('body-parser');
+var cors = require('cors')
+require('dotenv').config();
 
-const postsRouter = require('./routes/PostsRoute');
-const dbConnection = require('./services/Database');
+const router = require('./routes');
+const dbConnection = require('./Database/database');
+const errorHandlerMiddleware = require('./middlewares/errorHandler');
+
+const port = process.env.PORT || 8001
 
 const StartServer = async () => {
 
@@ -11,11 +16,13 @@ const StartServer = async () => {
 
     await dbConnection()
 
-    const port = 8000;
-
+    app.use(cors());
     app.use(bodyParser.json());
 
-    app.use('/posts', postsRouter);
+    app.use('/api', router);
+
+    //Catch Error
+    app.use(errorHandlerMiddleware);
 
     app.listen(port, () => {
         console.log(`Listening to port ${port}`);
